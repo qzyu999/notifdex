@@ -3,10 +3,18 @@ import unittest
 from pathlib import Path
 
 
-APP_SOURCES = Path(__file__).resolve().parents[1] / "Sources" / "NotifdexApp"
+ROOT = Path(__file__).resolve().parents[1]
+APP_SOURCES = ROOT / "Sources" / "NotifdexApp"
 
 
 class MacOSBuildContractTests(unittest.TestCase):
+    def test_package_excludes_built_apps(self):
+        manifest = (ROOT / "Package.swift").read_text(encoding="utf-8")
+        excludes = re.search(r"exclude:\s*\[(.*?)\]", manifest, re.DOTALL)
+        self.assertIsNotNone(excludes)
+        self.assertIn('"dist"', excludes[1])
+        self.assertTrue((ROOT / "dist" / ".gitignore").is_file())
+
     def test_app_avoids_swiftui_state_macro(self):
         # The macOS 27 standalone Command Line Tools build failed when @State
         # needed a SwiftUI macro plugin that was absent on that toolchain.

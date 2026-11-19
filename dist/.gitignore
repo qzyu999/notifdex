@@ -1,0 +1,3 @@
+# Keep the excluded directory present in a clean checkout.
+*
+!.gitignore

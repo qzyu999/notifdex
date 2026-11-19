@@ -80,7 +80,7 @@ public final class CaptureWorker {
     }
 
     public func start(onChange: @escaping (AppCaptureState) -> Void) {
-        queue.async {
+        queue.async { [self] in
             self.notify = onChange
             guard self.timer == nil else { self.emit(); return }
             do {
